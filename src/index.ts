@@ -1,52 +1,53 @@
-import express from 'express'
-import path from 'path'
-import { fileURLToPath } from 'url'
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import { PrismaClient } from "@prisma/client";
 
-const __filename = fileURLToPath(import.meta.url)
-const __dirname = path.dirname(__filename)
+dotenv.config();
+const app = express();
+const prisma = new PrismaClient();
 
-const app = express()
+app.use(cors());
+app.use(express.json());
+app.use(express.static("public"));
 
-// Home route - HTML
-app.get('/', (req, res) => {
-  res.type('html').send(`
-    <!doctype html>
-    <html>
-      <head>
-        <meta charset="utf-8"/>
-        <title>Express on Vercel</title>
-        <link rel="stylesheet" href="/style.css" />
-      </head>
-      <body>
-        <nav>
-          <a href="/">Home</a>
-          <a href="/about">About</a>
-          <a href="/api-data">API Data</a>
-          <a href="/healthz">Health</a>
-        </nav>
-        <h1>Welcome to Express on Vercel 🚀</h1>
-        <p>This is a minimal example without a database or forms.</p>
-        <img src="/logo.png" alt="Logo" width="120" />
-      </body>
-    </html>
-  `)
-})
+// Get current integer
+app.get("/value", async (_, res) => {
+  const val = await prisma.integerValue.findUnique({ where: { id: 1 } });
+  res.json({ value: val?.value ?? 0 });
+});
 
-app.get('/about', function (req, res) {
-  res.sendFile(path.join(__dirname, '..', 'components', 'about.htm'))
-})
+// Set a new integer
+app.post("/set", async (req, res) => {
+  const num = Number(req.body.value);
+  if (isNaN(num)) return res.status(400).json({ error: "Invalid number" });
 
-// Example API endpoint - JSON
-app.get('/api-data', (req, res) => {
-  res.json({
-    message: 'Here is some sample API data',
-    items: ['apple', 'banana', 'cherry'],
-  })
-})
+  await prisma.integerValue.upsert({
+    where: { id: 1 },
+    update: { value: num, updated_at: new Date() },
+    create: { id: 1, value: num },
+  });
 
-// Health check
-app.get('/healthz', (req, res) => {
-  res.status(200).json({ status: 'ok', timestamp: new Date().toISOString() })
-})
+  await prisma.integerHistory.create({ data: { value: num } });
+  res.json({ ok: true, new_value: num });
+});
 
-export default app
+// Recent history
+app.get("/history", async (req, res) => {
+  const limit = Number(req.query.limit) || 10;
+  const history = await prisma.integerHistory.findMany({
+    orderBy: { updated_at: "desc" },
+    take: limit,
+  });
+  res.json(history);
+});
+
+// Basic stats
+app.get("/stats", async (_, res) => {
+  const result: any = await prisma.$queryRaw`SELECT AVG(value)::float AS avg FROM "IntegerHistory"`;
+  const count = await prisma.integerHistory.count();
+  res.json({ average: result[0]?.avg ?? 0, count });
+});
+
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => console.log(`✅ Server running on http://localhost:${PORT}`));
