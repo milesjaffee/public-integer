@@ -20,7 +20,7 @@ app.get("/value", async (_, res) => {
 // Set a new integer
 app.post("/set", async (req, res) => {
   const num = Number(req.body.value);
-  if (isNaN(num)) return res.status(400).json({ error: "Invalid number" });
+  if (isNaN(num) || num > 2147483647 || num < -2147483648) return res.status(400).json({ error: "Invalid number" });
 
   await prisma.integerValue.upsert({
     where: { id: 1 },
