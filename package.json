@@ -12,6 +12,7 @@
   "dependencies": {
     "@prisma/client": "^6.17.1",
     "@types/express": "^5.0.3",
+    "@vercel/node": "^5.3.26",
     "cors": "^2.8.5",
     "dotenv": "^16.6.1",
     "express": "^4.21.2"
