@@ -1,18 +1,19 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-dotenv.config();
-const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  try {
+    const record = await prisma.integerValue.findUnique({
+      where: { id: 1 },
+    });
 
-// Get current integer
-app.get("/api/value", async (_, res) => {
-  const val = await prisma.integerValue.findUnique({ where: { id: 1 } });
-  res.json({ value: val?.value ?? 0 });
-});
+    res.status(200).json({ value: record?.value ?? 0 });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch value" });
+  } finally {
+    await prisma.$disconnect();
+  }
+}

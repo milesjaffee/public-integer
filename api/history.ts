@@ -1,22 +1,18 @@
-import express from "express";
-import cors from "cors";
-import dotenv from "dotenv";
 import { PrismaClient } from "@prisma/client";
+import type { VercelRequest, VercelResponse } from "@vercel/node";
 
-dotenv.config();
-const app = express();
 const prisma = new PrismaClient();
 
-app.use(cors());
-app.use(express.json());
-app.use(express.static("public"));
-
-// Recent history
-app.get("/api/history", async (req, res) => {
+export default async function handler(req: VercelRequest, res: VercelResponse) {
   const limit = Number(req.query.limit) || 10;
-  const history = await prisma.integerHistory.findMany({
-    orderBy: { updated_at: "desc" },
-    take: limit,
-  });
-  res.json(history);
-});
+  try {
+    const history = await prisma.integerHistory.findMany({
+      orderBy: { updated_at: "desc" },
+      take: limit,
+    });
+    res.status(200).json(history);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Failed to fetch history" });
+  }
+}
