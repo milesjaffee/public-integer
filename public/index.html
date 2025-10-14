@@ -26,10 +26,10 @@
 
     <script>
       async function refresh() {
-        const val = await fetch("/value").then(r => r.json());
+        const val = await fetch("/api/value").then(r => r.json());
         document.getElementById("value").textContent = val.value;
 
-        const hist = await fetch("/history?limit=5").then(r => r.json());
+        const hist = await fetch("api/history.ts?limit=5").then(r => r.json());
         document.getElementById("history").innerHTML = hist
           .map(h => `<li>${h.value} <small>(${new Date(h.updated_at).toLocaleString()})</small></li>`)
           .join("");
