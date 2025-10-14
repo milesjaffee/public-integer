@@ -30,10 +30,10 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
 
         <script>
           async function refresh() {
-            const val = await fetch("/value").then(r => r.json());
+            const val = await fetch("/api/value").then(r => r.json());
             document.getElementById("value").textContent = val.value;
 
-            const hist = await fetch("/history?limit=5").then(r => r.json());
+            const hist = await fetch("/api/history?limit=5").then(r => r.json());
             document.getElementById("history").innerHTML = hist
               .map(h => {<li>h.value <small>(new Date(h.updated_at).toLocaleString())</small></li>})
               .join("");
@@ -42,7 +42,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
           document.getElementById("setBtn").onclick = async () => {
             const v = Number(document.getElementById("newVal").value);
             if (!Number.isFinite(v)) return alert("Enter a valid number!");
-            await fetch("/set", {
+            await fetch("/api/set", {
               method: "POST",
               headers: { "Content-Type": "application/json" },
               body: JSON.stringify({ value: v })

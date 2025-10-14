@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Get current integer
-app.get("/value", async (_, res) => {
+app.get("/api/value", async (_, res) => {
   const val = await prisma.integerValue.findUnique({ where: { id: 1 } });
   res.json({ value: val?.value ?? 0 });
 });

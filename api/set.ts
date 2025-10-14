@@ -12,7 +12,7 @@ app.use(express.json());
 app.use(express.static("public"));
 
 // Set a new integer
-app.post("/set", async (req, res) => {
+app.post("/api/set", async (req, res) => {
   const num = Number(req.body.value);
   if (isNaN(num) || num > 2147483647 || num < -2147483648) return res.status(400).json({ error: "Invalid number" });
 
