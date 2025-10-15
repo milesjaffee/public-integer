@@ -1,6 +1,15 @@
 import { VercelRequest, VercelResponse } from '@vercel/node'
+import fs from 'fs'
+import path from 'path'
 
 export default function handler(req: VercelRequest, res: VercelResponse) {
+  if (req.url === '/favicon.ico') {
+    const faviconPath = path.join(process.cwd(), 'public', 'favicon.ico')
+    const favicon = fs.readFileSync(faviconPath)
+    res.setHeader('Content-Type', 'image/x-icon')
+    return res.status(200).send(favicon)
+  }
+
   res.setHeader('Content-Type', 'text/html')
   res.status(200).send(`
     <html>
@@ -18,6 +27,7 @@ export default function handler(req: VercelRequest, res: VercelResponse) {
           }
           ul { list-style: none; padding: 0; }
         </style>
+        <link rel="icon" href="/public/favicon.ico" />
       </head>
       <body>
         <h1>🌐 public integer</h1>

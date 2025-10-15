@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vercel dev",
+    "build": "tsc",
+    "start": "node dist/api/index.js",
     "postinstall": "prisma generate"
   },
   "dependencies": {
@@ -13,7 +14,7 @@
   "devDependencies": {
     "@types/node": "^22.18.10",
     "prisma": "^6.17.1",
-
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "tsx":"4.20.6"
   }
 }
