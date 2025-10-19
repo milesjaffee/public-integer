@@ -3,28 +3,22 @@
   <head>
     <title>public integer</title>
     <link rel="shortcut icon" type="image/x-icon" href="/favicon.ico" />
-    <style>
-      body {
-        font-family: system-ui, sans-serif;
-        text-align: center;
-        padding: 2rem;
-      }
-      input, button {
-        font-size: 1rem;
-        padding: 0.5rem;
-      }
-      ul { list-style: none; padding: 0; }
-    </style>
+    <link href="style.css" rel="stylesheet" type="text/css" media="all">
     <meta rel="shortcut icon" href="/favicon.ico" />
   </head>
   <body>
-    <h1>🌐 public integer</h1>
-    <p>Current value: <strong id="value">...</strong></p>
-    <input id="newVal" type="number" placeholder="Enter new number">
-    <button id="setBtn">Set</button>
+  <div class="container">
+    <header><span>🌐 public integer</span></header>
+    <section class="half">
+        <p>Current value: <strong id="value">...</strong></p>
+        <input id="newVal" type="number" placeholder="Enter new number">
+        <button id="setBtn">Set</button>
+    </section>
 
-    <h3>Recent history:</h3>
-    <ul id="history"></ul>
+    <section class="small">
+        <h3>Recent history:</h3>
+        <ul id="history"></ul>
+    </section>
 
     <script>
       async function refresh() {
@@ -50,5 +44,6 @@
 
       refresh();
     </script>
+  </div>
   </body>
 </html>
