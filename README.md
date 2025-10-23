@@ -1,31 +1,23 @@
-# Express.js on Vercel
+# public integer
 
-Basic Express.js + Vercel example that serves html content, JSON data and simulates an api route.
+An integer anyone can change, any time.
+It's also a cleanly written REST API.
 
-## How to Use
+## API Routes
 
-You can choose from one of the following two methods to use this repository:
+* /api/history (optional parameter: ?value=NUMBER) - gets recent history of the number
+* /api/value - gets current value
+* /api/set - a post route to change the number
 
-### One-Click Deploy
+## Features Coming Soon
 
-Deploy the example using [Vercel](https://vercel.com?utm_source=github&utm_medium=readme&utm_campaign=vercel-examples):
+* graph to track changes per day
+* facts and statistics about the current number
+* visualization of binary and hexadecimal integer values - could be a cool way to teach freshman cs students about how an integer is stored in memory
+* docs page
+* mobile app
+* prettification of website
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/git/external?repository-url=https://github.com/vercel/examples/tree/main/solutions/express&project-name=express&repository-name=express)
+## You Can
 
-### Clone and Deploy
-
-```bash
-git clone https://github.com/vercel/examples/tree/main/solutions/express
-```
-
-Install the Vercel CLI:
-
-```bash
-npm i -g vercel
-```
-
-Then run the app at the root of the repository:
-
-```bash
-vercel dev
-```
+* build your own app using this API!
