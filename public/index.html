@@ -15,6 +15,8 @@
         <button id="setBtn">Set</button>
         <p></p>
         <p>This number is stored as <strong>0x<span id="hexadecimal">...</span></strong> in hexadecimal (base 16) and <strong>0b<span id="binary"></span></strong> in binary (base 2).</p>
+
+        <canvas id="freqChart"></canvas>
         
     </section>
 
@@ -22,6 +24,8 @@
         <h3>Recent history:</h3>
         <ul id="history"></ul>
     </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <script>
       async function refresh() {
@@ -37,6 +41,27 @@
         document.getElementById("history").innerHTML = hist
           .map(h => `<li>${h.value} <small>(${new Date(h.updated_at).toLocaleString()})</small></li>`)
           .join("");
+
+        const ctx = document.getElementById('freqChart');
+
+        new Chart(ctx, {
+            type: 'bar',
+            data: {
+            labels: ['Red', 'Blue', 'Yellow', 'Green', 'Purple', 'Orange'],
+            datasets: [{
+                label: '# of Votes',
+                data: [12, 19, 3, 5, 2, 3],
+                borderWidth: 1
+            }]
+            },
+            options: {
+            scales: {
+                y: {
+                beginAtZero: true
+                }
+            }
+            }
+        });
       }
 
       document.getElementById("setBtn").onclick = async () => {
