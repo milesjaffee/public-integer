@@ -13,10 +13,10 @@ It's also a cleanly written REST API.
 
 * graph to track changes per day
 * facts and statistics about the current number
-* visualization of binary and hexadecimal integer values - could be a cool way to teach freshman cs students about how an integer is stored in memory
 * docs page
 * mobile app
 * prettification of website
+* public double?
 
 ## You Can
 

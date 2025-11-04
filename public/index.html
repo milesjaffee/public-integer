@@ -13,6 +13,9 @@
         <p>Current value: <strong id="value">...</strong></p>
         <input id="newVal" type="number" placeholder="Enter new number">
         <button id="setBtn">Set</button>
+        <p></p>
+        <p>This number is stored as <strong>0x<span id="hexadecimal">...</span></strong> in hexadecimal (base 16) and <strong>0b<span id="binary"></span></strong> in binary (base 2).</p>
+        
     </section>
 
     <section class="small">
@@ -24,6 +27,11 @@
       async function refresh() {
         const val = await fetch("/api/value").then(r => r.json());
         document.getElementById("value").textContent = val.value;
+
+        const num = val.value | 0;
+
+        document.getElementById("hexadecimal").textContent = val.value > 0? num.toString(16).padStart(8, '0') : (num>>>0).toString(16);
+        document.getElementById("binary").textContent = val.value > 0? num.toString(2).padStart(32, '0') : (num>>>0).toString(2);
 
         const hist = await fetch("api/history?limit=5").then(r => r.json());
         document.getElementById("history").innerHTML = hist
