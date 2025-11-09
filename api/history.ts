@@ -6,7 +6,11 @@ const prisma = new PrismaClient();
 export default async function handler(req: VercelRequest, res: VercelResponse) {
   const limit = Number(req.query.limit);
   try {
-    const history = await prisma.integerHistory.findMany({
+    const history = limit? await prisma.integerHistory.findMany({
+      orderBy: { updated_at: "desc" },
+      take: limit,
+    }) :
+    await prisma.integerHistory.findMany({
       orderBy: { updated_at: "desc" },
       //take: limit,
     });
