@@ -11,7 +11,7 @@ It's also a cleanly written REST API.
 
 ## Features Coming Soon
 
-* graph to track changes per day
+* graphs to track changes per week, average time of day of changes, etc.
 * facts and statistics about the current number
 * docs page
 * mobile app

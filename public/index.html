@@ -15,6 +15,8 @@
         <button id="setBtn">Set</button>
         <p></p>
         <p>This number is stored as <strong>0x<span id="hexadecimal">...</span></strong> in hexadecimal (base 16) and <strong>0b<span id="binary"></span></strong> in binary (base 2).</p>
+
+        <canvas id="freqChart"></canvas>
         
     </section>
 
@@ -22,6 +24,9 @@
         <h3>Recent history:</h3>
         <ul id="history"></ul>
     </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns/dist/chartjs-adapter-date-fns.bundle.min.js"></script>
 
     <script>
       async function refresh() {
@@ -33,10 +38,66 @@
         document.getElementById("hexadecimal").textContent = val.value > 0? num.toString(16).padStart(8, '0') : (num>>>0).toString(16);
         document.getElementById("binary").textContent = val.value > 0? num.toString(2).padStart(32, '0') : (num>>>0).toString(2);
 
-        const hist = await fetch("api/history?limit=5").then(r => r.json());
-        document.getElementById("history").innerHTML = hist
+        const hist = await fetch("api/history").then(r => r.json());
+        document.getElementById("history").innerHTML = hist.slice(0,5)
           .map(h => `<li>${h.value} <small>(${new Date(h.updated_at).toLocaleString()})</small></li>`)
           .join("");
+
+        const ctx = document.getElementById('freqChart');
+        //Chart.register(adapter);
+
+        const dailyFrequencyMap = new Map();
+        hist.forEach(history => {
+            const date = new Date(history.updated_at);
+            date.setHours(0,0,0,0); //midnight as we are counting per day
+            const dateKey = date.toISOString();
+            const count = dailyFrequencyMap.get(dateKey) || 0;
+            dailyFrequencyMap.set(dateKey, count + 1);
+        });
+
+        const chartData = Array.from(dailyFrequencyMap.keys()).map(dateKey => {
+            return {
+                x: dateKey,
+                y: dailyFrequencyMap.get(dateKey)
+            };
+        }).sort((a, b) => new Date(a.x) - new Date(b.x));
+
+        //console.log(chartData);
+
+
+        new Chart(ctx, {
+            type: 'line',
+            data: {
+                datasets: [{
+                label: 'Frequency',
+                data: chartData,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]},
+            options: {
+                scales: {
+                x: {
+                    type: 'time',
+                    time: {
+                        unit: 'week',
+                        tooltipFormat: 'MMM d, yyyy'
+                    },
+                    title: {
+                        display: true,
+                        text: 'Date'
+                    }
+                },
+                y: {
+                    beginAtZero: true,
+                    title: {
+                        display: true,
+                        text: 'Count'
+                    }
+                }
+            }
+        }
+            
+        });
       }
 
       document.getElementById("setBtn").onclick = async () => {
